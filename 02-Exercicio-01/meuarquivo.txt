@@ -1,2 +1,0 @@
-Conteúdo inicial do arquivo.
-Criado com o módulo fs do Node.js
