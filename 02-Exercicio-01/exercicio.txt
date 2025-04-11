@@ -1,0 +1,9 @@
+Crie um arquivo JS que exporte, usando a sintaxe de ESModules, as 4 funções abaixo:
+
+1. uma função que deve criar um arquivo de texto chamado "meuarquivo.txt" no diretório atual contendo o texto informado como argumento 
+
+2. uma função que deve reescrever o texto no arquivo "meuarquivo.txt" substituindo o conteúdo pelo texto informado no argumento 
+
+3. uma função que deve ler o conteúdo do "meuarquivo.txt" e exibi-lo no console 
+
+4. uma função que deve excluir o arquivo "meuarquivo.txt" do sistema de arquivos
