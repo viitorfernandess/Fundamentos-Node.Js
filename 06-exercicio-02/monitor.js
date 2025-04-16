@@ -15,10 +15,12 @@ const systemPlatformMap = {
 function printlog() {
     const system = systemPlatformMap[os.platform()]
     const arch = os.arch()
+    const cpu = os.cpus()[0].model //Informa só o item da primeira posição [0]
 
     console.log("DETALHES DO SISTEMA: ")
     console.log(`Sistema Operacional: ${system}`)
     console.log(`Arquitetura: ${arch}`)
+    console.log(`Modelo do Processador: ${cpu}`)
 }
 
 printlog()
