@@ -17,10 +17,31 @@ function printlog() {
     const arch = os.arch()
     const cpu = os.cpus()[0].model //Informa só o item da primeira posição [0]
 
+    const upTimeDays = Math.floor(os.uptime() / 60 / 60 / 24) // dividir por 60 para obter os minutos; dividir por 60 para obter as horas; dividir por 24 para obter os dias.
+    const upTimeDaysInSeconds = upTimeDays * 24 * 60 * 60  // Quantidade de dias inteiros(calcualdo com o math floor) e ver quantos segundos são.
+
+    const upTimeHours = Math.floor((os.uptime() - upTimeDaysInSeconds) / 60 / 60)  // Utilizar o math floor para subtrair dos segundos totais, as quantidades de dias em segundos; depois dividir por 60 e depois por 60 de novo para ver a quantidade de segundos em horas
+    const upTimeHoursInSeconds = upTimeHours * 60 * 60
+
+    const upTimeMins = Math.floor((os.uptime() - upTimeDaysInSeconds - upTimeHoursInSeconds) / 60)
+    const upTimeMinsInSeconds = upTimeMins * 60
+
+    const upTimeSecs = Math.floor(os.uptime() - upTimeDaysInSeconds - upTimeHoursInSeconds - upTimeMinsInSeconds)
+
+    const upTime = `${upTimeDays}:${upTimeHours}:${upTimeMins}:${upTimeSecs}`
+
+
+    console.clear() //A cada nova execução ele limpa o console
     console.log("DETALHES DO SISTEMA: ")
     console.log(`Sistema Operacional: ${system}`)
     console.log(`Arquitetura: ${arch}`)
     console.log(`Modelo do Processador: ${cpu}`)
+    console.log(`Tempo de Atividade do Sistema: ${upTime}`)
 }
 
-printlog()
+
+// Execução a cada 1s do printLog
+
+setInterval(() => {
+    printlog()
+}, 1000)
