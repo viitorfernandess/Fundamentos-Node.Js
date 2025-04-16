@@ -14,9 +14,11 @@ const systemPlatformMap = {
 
 function printlog() {
     const system = systemPlatformMap[os.platform()]
+    const arch = os.arch()
 
     console.log("DETALHES DO SISTEMA: ")
     console.log(`Sistema Operacional: ${system}`)
+    console.log(`Arquitetura: ${arch}`)
 }
 
 printlog()
