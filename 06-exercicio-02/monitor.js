@@ -30,6 +30,9 @@ function printlog() {
 
     const upTime = `${upTimeDays}:${upTimeHours}:${upTimeMins}:${upTimeSecs}`
 
+    const ramTotal = os.totalmem() /1024 / 1024 / 1024  // Função informa o valor em bytes, fazemos a divisão apra que o valor informado seja em Gigabytes
+    const ramUsage = (os.totalmem() - os.freemem()) / 1024 / 1024 / 1024
+    const ramUsagePercent = (ramUsage / ramTotal) * 100
 
     console.clear() //A cada nova execução ele limpa o console
     console.log("DETALHES DO SISTEMA: ")
@@ -37,6 +40,7 @@ function printlog() {
     console.log(`Arquitetura: ${arch}`)
     console.log(`Modelo do Processador: ${cpu}`)
     console.log(`Tempo de Atividade do Sistema: ${upTime}`)
+    console.log(`Uso de memória RAM: ${ramUsage.toFixed(2)} GB / ${ramTotal.toFixed(2)} GB (${ramUsagePercent.toFixed(2)} %)`)
 }
 
 
