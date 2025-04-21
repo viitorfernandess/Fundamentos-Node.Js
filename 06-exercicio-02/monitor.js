@@ -3,6 +3,7 @@
 const os = require("node:os")
 const fs = require("node:fs")
 const path = require("node:path")
+const { uptime } = require("node:process")
 
 //Criar um mapa para o sistema saber o nome correto de cada plataforma
 
@@ -12,7 +13,7 @@ const systemPlatformMap = {
     "darwin": "MacOS"
 }
 
-function printlog() {
+function getSystemInfo() {
     const system = systemPlatformMap[os.platform()]
     const arch = os.arch()
     const cpu = os.cpus()[0].model //Informa só o item da primeira posição [0]
@@ -30,9 +31,18 @@ function printlog() {
 
     const upTime = `${upTimeDays}:${upTimeHours}:${upTimeMins}:${upTimeSecs}`
 
-    const ramTotal = os.totalmem() /1024 / 1024 / 1024  // Função informa o valor em bytes, fazemos a divisão apra que o valor informado seja em Gigabytes
+    const ramTotal = os.totalmem() / 1024 / 1024 / 1024  // Função informa o valor em bytes, fazemos a divisão apra que o valor informado seja em Gigabytes
     const ramUsage = (os.totalmem() - os.freemem()) / 1024 / 1024 / 1024
-    const ramUsagePercent = (ramUsage / ramTotal) * 100
+    const ramUsagePercent = Math.round((ramUsage / ramTotal) * 100)
+
+    return { system, arch, cpu, upTime, ramUsage, ramTotal, ramUsagePercent }
+
+
+
+}
+
+function printlog({ system, arch, cpu, upTime, ramUsage, ramTotal, ramUsagePercent }) {
+
 
     console.clear() //A cada nova execução ele limpa o console
     console.log("DETALHES DO SISTEMA: ")
@@ -43,9 +53,20 @@ function printlog() {
     console.log(`Uso de memória RAM: ${ramUsage.toFixed(2)} GB / ${ramTotal.toFixed(2)} GB (${ramUsagePercent.toFixed(2)} %)`)
 }
 
+function saveLog({ system, arch, cpu, upTime, ramUsage, ramTotal, ramUsagePercent }) {
+    const logContent = `DETALHES DO SISTEMA | Sistema Operacional: ${system} | Arquitetura: ${arch} | Modelo do Processador: ${cpu} | Tempo de Atividade do Sistema: ${upTime} | Uso de Memória RAM: ${ramUsage.toFixed(2)} GB / ${ramTotal.toFixed(2)} GB (${ramUsagePercent} %)\n---\n`
+    const logDir = path.join("/", "log")
 
-// Execução a cada 1s do printLog
+    if (!fs.existsSync(logDir)) {
+        fs.mkdirSync(logDir)
+    }
+
+    const logFilePath = path.join(logDir, "log.txt")
+    fs.appendFileSync(logFilePath, logContent)
+}
 
 setInterval(() => {
-    printlog()
+    const systemInfo = getSystemInfo()
+    printlog(systemInfo)
+    saveLog(systemInfo)
 }, 1000)
