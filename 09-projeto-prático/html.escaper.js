@@ -44,4 +44,23 @@ function escapeHtmlFile(inputFilePath, outputFilePath) {
   }
 }
 
+// Define uma função chamada askFilePath que recebe uma pergunta como argumento
+function askFilePath(question) {
+  // Cria uma interface de leitura para entrada (teclado) e saída (console)
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+
+  // Retorna uma Promise, pois rl.question é assíncrono e precisa aguardar a resposta do usuário
+  return new Promise((resolve) => {
+    // Exibe a pergunta no terminal e espera o usuário digitar a resposta
+    rl.question(question, (answer) => {
+      // Quando o usuário responder, a resposta é passada para a função resolve
+      // Isso "entrega" a resposta para quem chamou askFilePath
+      resolve(answer)
+
+      // Encerra a interface de leitura para liberar os recursos do terminal
+      rl.close()
+    })
+  })
+}
+
 
