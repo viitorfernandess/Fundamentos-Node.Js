@@ -21,3 +21,27 @@ function escapeHtmlSpecialCharacters(text) {
   })
 }
 
+// Define a função que recebe dois caminhos de arquivo: entrada e saída
+function escapeHtmlFile(inputFilePath, outputFilePath) {
+  try {
+    // Lê o conteúdo do arquivo de entrada como texto UTF-8
+    const fileContent = fs.readFileSync(inputFilePath, "utf-8")
+
+    // Chama a função para escapar caracteres especiais do HTML
+    const escapedContent = escapeHtmlSpecialCharacters(fileContent)
+
+    // Escreve o conteúdo escapado no arquivo de saída
+    fs.writeFileSync(outputFilePath, escapedContent, "utf-8")
+
+    // Exibe uma mensagem de sucesso no console
+    console.log(`Arquivo escapado com sucesso: ${outputFilePath}`)
+  } catch (error) {
+    // Se ocorrer um erro, exibe a mensagem de erro
+    console.log("Erro:", error.message)
+
+    // Encerra o processo com um código de erro (1)
+    process.exit(1)
+  }
+}
+
+
