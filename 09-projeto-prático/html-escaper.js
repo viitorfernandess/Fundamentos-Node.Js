@@ -62,5 +62,36 @@ function askFilePath(question) {
     })
   })
 }
+  
 
+// Define uma função assíncrona para lidar com a interação com o usuário
+async function userInteraction() {
+  // Suporte a argumentos via linha de comando:
+  // Exemplo: node html-escaper.js <inputPath> <outputPath>
+  let inputPath = process.argv[2] // Captura o primeiro argumento passado (arquivo de entrada)
 
+  // Se o caminho de entrada não for passado como argumento...
+  if (!inputPath) {
+    // Pergunta ao usuário qual o caminho do arquivo de entrada
+    inputPath = await askFilePath("Informe o caminho do arquivo de entrada: ")
+  }
+
+  // Converte o caminho do arquivo de entrada para um caminho absoluto
+  inputPath = path.resolve(inputPath)
+
+  // Gera um nome padrão para o arquivo de saída baseado no nome do arquivo de entrada
+  // Exemplo: se o arquivo for "index.html", o nome padrão será "escaped_index.html.txt"
+  const defaultName = `escaped_${path.basename(inputPath)}.txt`
+
+  // Pergunta ao usuário qual o caminho do arquivo de saída, oferecendo o nome padrão como sugestão
+  const answer = await askFilePath(`Informe o caminho do arquivo de saída (padrão: ${defaultName}): `)
+
+  // Se o usuário digitou um caminho, usa ele; senão, usa o nome padrão
+  let outputPath = answer.length > 0 ? answer : defaultName
+
+  // Também converte o caminho de saída para um caminho absoluto
+  outputPath = path.resolve(outputPath)
+
+  // Chama a função que processa o arquivo, escapando os caracteres especiais HTML
+  escapeHtmlFile(inputPath, outputPath)
+}
