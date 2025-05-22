@@ -4,6 +4,8 @@ const fs = require("node:fs")
 const path = require("node:path")
 const readline = require("node:readline")
 
+run()
+
 function escapeHtmlSpecialCharacters(text) {
   // Usa o método .replace() com uma expressão regular para encontrar os caracteres <, > e &
   return text.replace(/[<>&]/g, (match) => {
@@ -62,7 +64,7 @@ function askFilePath(question) {
     })
   })
 }
-  
+
 
 // Define uma função assíncrona para lidar com a interação com o usuário
 async function userInteraction() {
@@ -95,3 +97,33 @@ async function userInteraction() {
   // Chama a função que processa o arquivo, escapando os caracteres especiais HTML
   escapeHtmlFile(inputPath, outputPath)
 }
+
+// Função principal que decide como executar o script
+function run() {
+  // Verifica se foram passados pelo menos dois argumentos na linha de comando
+  // (os argumentos esperados são os caminhos dos arquivos de entrada e saída)
+  if (process.argv.length >= 4) {
+    // Se os caminhos foram passados, chama a função para escapar o HTML usando esses caminhos
+    // Usa path.resolve para garantir que os caminhos sejam absolutos (completos)
+    escapeHtmlFile(
+      path.resolve(process.argv[2]),
+      path.resolve(process.argv[3])
+    )
+  } else {
+    // Caso os argumentos não tenham sido passados, entra no modo interativo
+
+    // Exibe um cabeçalho amigável no terminal com nome e versão do script
+    console.log("---------------------")
+    console.log("HTML Tag Escaper v1.0")
+    console.log("---------------------\n")
+
+    // Exibe uma mensagem explicando que os argumentos não foram informados
+    console.log("Argumentos não informados! Por favor, informe os caminhos dos arquivos para realizar o escape.")
+
+    // Chama a função que interage com o usuário para perguntar os caminhos
+    userInteraction()
+  }
+}
+
+
+
