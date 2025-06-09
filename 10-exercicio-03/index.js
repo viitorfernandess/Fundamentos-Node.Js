@@ -34,64 +34,71 @@ function initializeNotesDirectory() {
     }
 }
 
-// Função que lista todas as notas salvas na pasta "notes".
+// Define a função chamada listNotes, que será usada para listar os arquivos de notas
 function listNotes() {
-    // Lê o conteúdo da pasta "notes" e retorna uma lista com os nomes dos arquivos.
-    // Como estamos usando 'readdirSync', a leitura é feita de forma síncrona (espera terminar).
+
+    // Usa o módulo fs (filesystem) para ler de forma síncrona os arquivos dentro do diretório de notas
     const notes = fs.readdirSync(notesDirectory)
 
-    // Verifica se a pasta está vazia (ou seja, não há arquivos de nota).
+    // Verifica se o array de arquivos está vazio, ou seja, se não há nenhuma nota salva
     if (notes.length === 0) {
-        console.log("Nenhuma nota encontrada.")
-        return; // Sai da função para não continuar exibindo o restante
-    }
 
-    // Caso existam arquivos, imprime a lista no terminal.
-    console.log("Notas salvas:")
-    // Percorre cada item (arquivo de nota) da lista 'notes'
-    // 'note' é o nome do arquivo (ex: "anotacao1.txt")
-    // 'index' é a posição do item na lista (começa em 0)
-    notes.forEach((note, index) => {
-        // Exibe no terminal a numeração (começando do 1) e o nome da nota
-        console.log(`${index + 1}. ${note}`)
-    })
+        // Se não houver arquivos, exibe a mensagem informando que nenhuma nota foi encontrada
+        console.log("Nenhuma nota encontrada.")
+
+    } else {
+        // Se houver arquivos, exibe a mensagem indicando que há notas salvas
+        console.log("Notas salvas:")
+
+        // Percorre o array de notas com forEach, mostrando cada uma com seu número na lista
+        notes.forEach((note, index) => {
+
+            // Exibe o número da nota (index + 1) e o nome do arquivo da nota
+            console.log(`${index + 1}. ${note}`)
+        })
+    }
+    askForNextAction()
 }
 
-// Função que permite ao usuário ler o conteúdo de uma nota existente
+
+// Função responsável por permitir ao usuário ler uma nota salva
 function readNote() {
-    // Lista as notas disponíveis para o usuário escolher
+
+    // Lista todas as notas disponíveis para que o usuário veja os números
     listNotes()
 
-    // Pergunta ao usuário qual nota ele deseja ler (baseado no número exibido na lista)
-    rl.question("Digite o número da nota que deseja ler: ", (index) => {
-        // Lê novamente a lista de arquivos na pasta "notes"
+    // Pergunta ao usuário qual número da nota ele deseja ler
+    rl.question("Digite o número da nota que deseja ler:", (index) => {
+
+        // Lê novamente os nomes dos arquivos de notas salvos no diretório
         const notes = fs.readdirSync(notesDirectory)
 
-        // Pega o nome da nota selecionada (lembre-se: o usuário digita 1, 2, 3... então subtraímos 1)
+        // Usa o número informado pelo usuário (subtraindo 1 porque o índice começa em 0)
         const selectedNote = notes[index - 1]
 
-        // Verifica se o número digitado é válido (ou seja, se existe um arquivo correspondente)
+        // Verifica se o número digitado é inválido (fora da lista ou inexistente)
         if (!selectedNote) {
             console.log("Número da nota inválido!")
-            return
+        } else {
+            // Se o número for válido, monta o caminho completo até o arquivo da nota
+            const notePath = path.join(notesDirectory, selectedNote)
+
+            // Lê o conteúdo do arquivo da nota como texto (formato utf-8)
+            const content = fs.readFileSync(notePath, "utf-8")
+
+            // Exibe no terminal o conteúdo da nota selecionada
+            console.log(`Conteúdo da nota "${selectedNote}":\n\n${content}`)
         }
 
-        // Monta o caminho completo do arquivo da nota
-        const notePath = path.join(notesDirectory, selectedNote)
-
-        // Lê o conteúdo da nota (como texto)
-        const content = fs.readFileSync(notePath, "utf-8")
-
-        // Exibe o conteúdo da nota no terminal
-        console.log(`Conteúdo da nota "${selectedNote}":`)
-        console.log(content);
+        // Pergunta ao usuário se ele deseja realizar outra ação
+        askForNextAction()
     })
 }
 
 // Função para criar uma nova nota
 function createNote() {
     // Pergunta ao usuário qual será o nome da nota
-    rl.question("Digite o nome da nota:", (noteName) => {
+    rl.question("Digite o nome da nota: ", (noteName) => {
 
         // Cria o caminho completo do arquivo juntando o diretório das notas com o nome digitado
         const notePath = path.join(notesDirectory, noteName)
@@ -108,6 +115,34 @@ function createNote() {
         })
     })
 }
+
+// Define a função chamada askForNextAction
+function askForNextAction() {
+
+    // Exibe a pergunta no terminal e espera a resposta do usuário
+    rl.question("\nDeseja realizar outra ação? (s/n): ", (answer) => {
+
+        // Converte a resposta para letras minúsculas e verifica se é "s"
+        if (answer.toLowerCase() === "s") {
+
+            // Se for "s", chama a função principal (main), repetindo a ação
+            main()
+
+        } else {
+            // Se a resposta não for "s" (ou seja, qualquer outra coisa)
+
+            // Exibe mensagem de encerramento no terminal
+            console.log("Encerrando...")
+
+            // Fecha a interface de leitura de linha (readline)
+            rl.close()
+
+            // Encerra completamente a execução do programa com status 0 (sucesso)
+            process.exit(0)
+        }
+    })
+}
+
 
 function main() {
     initializeNotesDirectory()
@@ -146,6 +181,8 @@ function main() {
         }
     })
 }
+
+main()
 
 
 
