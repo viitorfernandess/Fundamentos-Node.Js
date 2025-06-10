@@ -95,26 +95,31 @@ function readNote() {
     })
 }
 
-// Função para criar uma nova nota
+// Função que cria uma nova nota
 function createNote() {
-    // Pergunta ao usuário qual será o nome da nota
-    rl.question("Digite o nome da nota: ", (noteName) => {
+  
+  // Pergunta ao usuário o nome da nota
+  rl.question("Digite o nome da nota: ", (noteName) => {
 
-        // Cria o caminho completo do arquivo juntando o diretório das notas com o nome digitado
-        const notePath = path.join(notesDirectory, noteName)
+    // Cria o caminho completo do arquivo usando o nome da nota e o diretório das notas
+    const notePath = path.join(notesDirectory, noteName)
 
-        // Pergunta ao usuário qual será o conteúdo da nota
-        rl.question("Digite o conteúdo da nota:\n", (content) => {
+    // Pergunta ao usuário o conteúdo da nota
+    rl.question("Digite o conteúdo da nota:\n", (content) => {
 
-            // Cria um arquivo .txt com o nome da nota e escreve o conteúdo dentro dele
-            // O terceiro parâmetro ("utf8") define o tipo de codificação do texto
-            fs.writeFileSync(notePath + ".txt", content, "utf8")
+      // Escreve o conteúdo digitado em um arquivo com extensão .txt
+      // O arquivo será salvo no caminho especificado, com codificação UTF-8
+      fs.writeFileSync(notePath + ".txt", content, "utf-8")
 
-            // Exibe uma mensagem confirmando que a nota foi criada com sucesso
-            console.log(`Nota ${noteName} foi criada com sucesso!`)
-        })
+      // Exibe uma mensagem de sucesso no terminal
+      console.log(`Nota ${noteName} foi criada com sucesso!`)
+
+      // Chama uma função para perguntar o que o usuário deseja fazer em seguida
+      askForNextAction()
     })
+  })
 }
+
 
 // Define a função chamada askForNextAction
 function askForNextAction() {
