@@ -57,7 +57,6 @@ function listNotes() {
             console.log(`${index + 1}. ${note}`)
         })
     }
-    askForNextAction()
 }
 
 
@@ -89,37 +88,54 @@ function readNote() {
             // Exibe no terminal o conteúdo da nota selecionada
             console.log(`Conteúdo da nota "${selectedNote}":\n\n${content}`)
         }
-
-        // Pergunta ao usuário se ele deseja realizar outra ação
+        
         askForNextAction()
     })
 }
 
 // Função que cria uma nova nota
 function createNote() {
-  
-  // Pergunta ao usuário o nome da nota
-  rl.question("Digite o nome da nota: ", (noteName) => {
 
-    // Cria o caminho completo do arquivo usando o nome da nota e o diretório das notas
-    const notePath = path.join(notesDirectory, noteName)
+    // Pergunta ao usuário o nome da nota
+    rl.question("Digite o nome da nota: ", (noteName) => {
 
-    // Pergunta ao usuário o conteúdo da nota
-    rl.question("Digite o conteúdo da nota:\n", (content) => {
+        // Cria o caminho completo do arquivo usando o nome da nota e o diretório das notas
+        const notePath = path.join(notesDirectory, noteName)
 
-      // Escreve o conteúdo digitado em um arquivo com extensão .txt
-      // O arquivo será salvo no caminho especificado, com codificação UTF-8
-      fs.writeFileSync(notePath + ".txt", content, "utf-8")
+        // Pergunta ao usuário o conteúdo da nota
+        rl.question("Digite o conteúdo da nota:\n", (content) => {
 
-      // Exibe uma mensagem de sucesso no terminal
-      console.log(`Nota ${noteName} foi criada com sucesso!`)
+            // Escreve o conteúdo digitado em um arquivo com extensão .txt
+            // O arquivo será salvo no caminho especificado, com codificação UTF-8
+            fs.writeFileSync(notePath + ".txt", content, "utf-8")
 
-      // Chama uma função para perguntar o que o usuário deseja fazer em seguida
-      askForNextAction()
+            // Exibe uma mensagem de sucesso no terminal
+            console.log(`Nota ${noteName} foi criada com sucesso!`)
+
+            // Chama uma função para perguntar o que o usuário deseja fazer em seguida
+            askForNextAction()
+        })
     })
-  })
 }
 
+function deleteNote() {
+    listNotes()
+
+    rl.question("Digite o número da nota que deseja excluir: ", (index) => {
+        const notes = fs.readdirSync(notesDirectory)
+        const selectedNote = notes[index - 1]
+
+        if (!selectedNote) {
+            console.log("Número de nota inválido.")
+        } else {
+            const notePath = path.join(notesDirectory, selectedNote)
+            fs.unlinkSync(notePath)
+            console.log(`Nota "${selectedNote}" excluída com sucesso!`)
+        }
+
+        askForNextAction()
+    })
+}
 
 // Define a função chamada askForNextAction
 function askForNextAction() {
@@ -168,12 +184,16 @@ function main() {
         switch (option) {
             case "1":
                 listNotes()
+               askForNextAction()
                 break;
             case "2":
                 readNote()
                 break;
             case "3":
                 createNote()
+                break;
+            case "4":
+                deleteNote()
                 break;
             case "5":
                 console.log("Saindo...")
